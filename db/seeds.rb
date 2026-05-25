@@ -1,9 +1,7 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
+ChatRole.destroy_all
+
+ChatRole.create!([
+  { title: "RH", prompt_description: "Tu es un recruteur RH. Tu évalues la motivation, le parcours et l'adéquation culturelle du candidat." },
+  { title: "Manager", prompt_description: "Tu es un manager opérationnel. Tu évalues les compétences concrètes, la gestion de projet et le leadership." },
+  { title: "Tech", prompt_description: "Tu es un lead technique. Tu évalues les compétences techniques, la résolution de problèmes et la culture engineering." }
+])
