@@ -132,4 +132,3 @@ puts "✅ Rapport de feedback et coaching généré pour la simulation !"
 puts "\n=========================================================="
 puts "           Seeding terminé avec succès !                  "
 puts "=========================================================="
-

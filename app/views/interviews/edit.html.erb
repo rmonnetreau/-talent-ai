@@ -1,0 +1,12 @@
+<div class="interview-new">
+  <div class="interview-new-back">
+    <%= link_to interviews_path do %>
+      ← Mes entretiens
+    <% end %>
+  </div>
+
+  <h1>Modifier entretien</h1>
+  <p class="interview-new-subtitle">Décris le poste pour que l'IA personnalise les questions.</p>
+
+  <%= render "form", interview: @interview %>
+</div>
