@@ -1,16 +1,26 @@
-<h1><%= @interview.job_title %></h1>
-<h2>Chat "<%= @chat.title %>"</h2>
+<div class="chat-show">
+  <div class="chat-header">
+    <div>
+      <h1><%= @chat.title %>, pour <%= @interview.job_title %></h1>
+      <p class="chat-subtitle">Recruteur <%= @chat_role.title %></p>
+    </div>
+      Générer mes feedback (to do)
+  </div>
 
-<% @chat.messages.each do |message| %>
-  <p>
-    <strong><%= message.role %></strong>
-    <%= raw(message.content) %>
-  </p>
-<% end %>
+  <div class="chat-module-card">
+    <% @chat.messages.each do |message| %>
+      <div class="chat-module-messages d-flex flex-column mb-4 <%= message.role == "user" ? "align-items-end" : "align-items-start" %>">
+        <span><%= message.role == "user" ? "Vous" : message.role %></span>
+        <p class="<%= message.role == "user" ? "light" : ""%>">
+          <%= raw(message.content) %>
+        </p>
+      </div>
+    <% end %>
 
-<div id="new_message_container">
-  <%= simple_form_for [@chat, @message] do |f| %>
-    <%= f.input :content, label: "Ask a question", required: true, placeholder: "Be polite to begin" %>
-    <%= f.button :submit, 'Submit', class: 'btn btn-primary' %>
-  <% end %>
+    <%= simple_form_for [@chat, @message] do |f| %>
+      <%= f.input :content, label: "Répondre", required: true, placeholder: "Ecris ta réponse" %>
+      <%= f.button :submit, 'Submit', class: 'btn btn-primary' %>
+    <% end %>
+    </div>
+  </div>
 </div>

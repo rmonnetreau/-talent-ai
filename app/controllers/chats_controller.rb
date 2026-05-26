@@ -9,6 +9,8 @@ class ChatsController < ApplicationController
     @chat.interview = secure_interview_for_user
 
     if @chat.save
+      Message.create(role: "assistant",
+                     content: "Bonjour ! Pour commencer, parlez-moi de votre parcours et expliquez moi pourquoi vous avez choisi de répondre à notre annonce", chat: @chat) # rubocop:disable Layout/LineLength
       redirect_to chat_path(@chat)
     else
       render :new, status: :unprocessable_entity
@@ -17,6 +19,7 @@ class ChatsController < ApplicationController
 
   def show
     @chat = Chat.joins(:interview).where(interviews: { user: current_user }).find(params[:id])
+    @chat_role = ChatRole.find(@chat.chat_role_id)
     @interview = @chat.interview
     @message = Message.new
   end

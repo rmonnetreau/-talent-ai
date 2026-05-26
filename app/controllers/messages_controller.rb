@@ -1,7 +1,7 @@
 class MessagesController < ApplicationController
   # SYSTEM_PROMPT = ""
 
-  def create
+  def create # rubocop:disable Metrics/MethodLength
     @chat = Chat.joins(:interview).where(interviews: { user: current_user }).find(params[:chat_id])
 
     @message = Message.new(message_params)
@@ -12,9 +12,10 @@ class MessagesController < ApplicationController
       # ruby_llm_chat = RubyLLM.chat
       # response = ruby_llm_chat.with_instructions(SYSTEM_PROMPT).ask(@message.content)
       Message.create(role: "assistant", content: "Ok", chat: @chat)
-
       redirect_to chat_path(@chat)
     else
+      @interview = @chat.interview
+      @chat_role = ChatRole.find(@chat.chat_role_id)
       render "chats/show", status: :unprocessable_entity
     end
   end
