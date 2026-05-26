@@ -114,14 +114,14 @@ puts "✅ Simulation de discussion créée (#{chat_tech.messages.count} messages
 Feedback.create!(
   chat: chat_tech,
   global_score: 82,
-  strengths: <<~MARKDOWN
+  strengths: <<~MARKDOWN,
     - **Forte maîtrise technique** : Très bonne explication du cycle de vie d'un contrôleur Rails et de l'utilisation d'Active Record.
     - **Exemples concrets** : Utilisation pertinente d'exemples de projets passés pour illustrer la résolution de bugs.
-  MARKDOWN,
-  weaknesses: <<~MARKDOWN
+  MARKDOWN
+  weaknesses: <<~MARKDOWN,
     - **Précision technique** : Explications un peu floues sur la différence précise entre Turbo et Stimulus.
     - **Structure** : Attention à ne pas trop s'éparpiller sur les réponses courtes. Pense à structurer tes réponses avec la méthode STAR.
-  MARKDOWN,
+  MARKDOWN
   priority_advice: "Pour ton prochain entretien réel, prépare 2 histoires concrètes de bugs complexes que tu as résolus, en te focalisant sur tes actions individuelles.",
   recommended_method: "Méthode STAR (Situation, Tâche, Action, Résultat)",
   best_answer: "L'explication très claire de la résolution des requêtes N+1 à l'aide de `.includes`.",
