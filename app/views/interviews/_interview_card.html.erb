@@ -82,7 +82,7 @@
               <p class="chat-card-meta">
                 Repris le <%= l(chat.updated_at.to_date, format: :short) %> · <%= pluralize(chat.messages.count, "échange", "échanges") %>
               </p>
-              <%= link_to "▷ Reprendre", interview_chat_path(interview, chat), class: "chat-resume-link" %>
+              <%= link_to "▷ Reprendre", chat_path(chat), class: "chat-resume-link" %>
             </div>
           <% end %>
 
