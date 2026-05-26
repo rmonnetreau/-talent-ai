@@ -2,7 +2,7 @@ class InterviewsController < ApplicationController
   before_action :set_interview, only: %i[show edit update destroy]
 
   def index
-    @interviews = current_user.interviews
+    @interviews = current_user.interviews.reverse
   end
 
   def show

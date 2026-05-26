@@ -4,7 +4,8 @@
     <div>
       <h1>Mes entretiens</h1>
       <p class="interviews-subtitle">
-        <%= pluralize(@interviews.count, "poste suivi", "postes suivis") %> ·      </p>
+        <%= pluralize(@interviews.count, "poste suivi", "postes suivis") %>
+      </p>
     </div>
     <%= link_to new_interview_path, class: "btn-primary" do %>
       <span>+</span> Nouvel entretien
