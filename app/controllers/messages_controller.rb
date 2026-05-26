@@ -2,7 +2,7 @@ class MessagesController < ApplicationController
   # SYSTEM_PROMPT = ""
 
   def create
-    @chat = current_user.interviews.chats.find(params[:chat_id])
+    @chat = Chat.joins(:interview).where(interviews: { user: current_user }).find(params[:chat_id])
 
     @message = Message.new(message_params)
     @message.chat = @chat

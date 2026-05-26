@@ -1,21 +1,25 @@
 class ChatsController < ApplicationController
   def create
-    @interview = Interview.find(params[:interview_id])
+    @interviews = Interview.all.where(user: current_user)
+    @interview = @interviews.find(params[:interview_id])
 
     @chat = Chat.new(title: "Untitled")
     @chat.interview = @interview
-    @chat.user = current_user
+
+    # temporary, must be the role selected by the user
+    @chat.chat_role = ChatRole.find_by(id: 4)
 
     if @chat.save
       redirect_to chat_path(@chat)
     else
-      @chats = @interview.chats.where(user: current_user)
+      @chats = @interview.chats
       render "interviews/show"
     end
   end
 
   def show
-    @chat    = current_user.chats.find(params[:id])
+    @chat = Chat.joins(:interview).where(interviews: { user: current_user }).find(params[:id])
+    @interview = @chat.interview
     @message = Message.new
   end
 end
