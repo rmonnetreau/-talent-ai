@@ -1,5 +1,5 @@
 class InterviewsController < ApplicationController
-  before_action :set_interview, only: %i[show edit update]
+  before_action :set_interview, only: %i[show edit update destroy]
 
   def index
     @interviews = current_user.interviews
@@ -24,10 +24,15 @@ class InterviewsController < ApplicationController
     @interview = Interview.new(interview_params)
     @interview.user = current_user
     if @interview.save
-      redirect_to interview_path(@interview)
+      redirect_to interviews_path
     else
       render :new, status: :unprocessable_entity
     end
+  end
+
+  def destroy
+    @interview.destroy
+    redirect_to interviews_path, status: :see_other, notice: "Entretien supprimé."
   end
 
   private
