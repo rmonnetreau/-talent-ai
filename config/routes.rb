@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   root to: "pages#home"
 
   resources :interviews, only: [:index, :show, :create, :new, :edit, :update] do
-    resources :chats, only: [:create]
+    resources :chats, only: [:new, :create]
   end
 
   resources :chats, only: :show do

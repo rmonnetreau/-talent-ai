@@ -1,0 +1,12 @@
+<div class="form-page">
+  <div class="form-page-back">
+    <%= link_to interviews_path do %>
+      ← Mes entretiens
+    <% end %>
+  </div>
+
+  <h1>Nouvelle simulation</h1>
+  <p class="form-page-subtitle">Choisis le type d'interlocuteur à simuler</p>
+
+  <%= render "form", interview: @interview, chat: @chat %>
+</div>

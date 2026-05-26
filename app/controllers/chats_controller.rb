@@ -1,4 +1,10 @@
 class ChatsController < ApplicationController
+  def new
+    @chat = Chat.new
+    @interviews = Interview.all.where(user: current_user)
+    @interview = @interviews.find(params[:interview_id])
+  end
+
   def create
     @interviews = Interview.all.where(user: current_user)
     @interview = @interviews.find(params[:interview_id])

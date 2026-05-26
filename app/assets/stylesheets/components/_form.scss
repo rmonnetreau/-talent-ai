@@ -1,5 +1,5 @@
-// ── Interview new ──────────────────────────────────────────────
-.interview-new {
+// ── Form page wrapper ──────────────────────────────────────────
+.form-page {
   max-width: 780px;
   margin: 0 auto;
   padding: 32px 24px;
@@ -31,8 +31,8 @@
   }
 }
 
-// ── Interview form ─────────────────────────────────────────────
-.interview-form {
+// ── App form ───────────────────────────────────────────────────
+.app-form {
   &-card {
     background: $bg-card;
     border: 1px solid $border;
@@ -72,7 +72,7 @@
   }
 
   &-textarea {
-    @extend .interview-form-input;
+    @extend .app-form-input;
     resize: vertical;
     min-height: 160px;
     line-height: 1.6;

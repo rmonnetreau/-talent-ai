@@ -1,22 +1,22 @@
-<%= simple_form_for interview, class: "interview-form" do |f| %>
-  <div class="interview-form-card">
+<%= simple_form_for interview, class: "app-form" do |f| %>
+  <div class="app-form-card">
 
     <%= f.input :job_title,
         label: "Titre du poste",
         placeholder: "ex. Product Manager — Alma",
-        input_html: { class: "interview-form-input" },
-        label_html: { class: "interview-form-label" },
+        input_html: { class: "app-form-input" },
+        label_html: { class: "app-form-label" },
         wrapper: false %>
 
     <%= f.input :job_description,
         label: "Description du poste",
         placeholder: "Copie/colle l'offre d'emploi ou résume le poste : missions, équipe, contexte...",
         as: :text,
-        input_html: { class: "interview-form-textarea", rows: 8 },
-        label_html: { class: "interview-form-label" },
+        input_html: { class: "app-form-textarea", rows: 8 },
+        label_html: { class: "app-form-label" },
         wrapper: false %>
 
-    <div class="interview-form-actions">
+    <div class="app-form-actions">
       <%= link_to "Annuler", interviews_path, class: "btn-secondary" %>
       <%= f.submit "Ajouter", class: "btn-primary" %>
     </div>
