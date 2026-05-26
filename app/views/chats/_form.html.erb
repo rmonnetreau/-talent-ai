@@ -1,0 +1,32 @@
+<%= simple_form_for [interview, chat], class: "app-form" do |f| %>
+  <div class="app-form-card">
+    <div>
+      <%= f.input :title,
+        label: "Titre",
+        placeholder: "ex. Pré-qualif RH",
+        input_html: { class: "app-form-input" },
+        label_html: { class: "app-form-label" },
+        wrapper: false %>
+    </div>
+
+    <div>
+      <div class="role-picker">
+        <%= f.collection_radio_buttons :chat_role_id, ChatRole.all, :id, :title do |b| %>
+          <%= b.label class: "role-picker-card" do %>
+            <%= b.radio_button %>
+            <div class="role-picker-card-body">
+              <strong><%= b.text %></strong>
+              <span><%= b.object.short_description %></span>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+      <%= f.error :chat_role_id, class: "app-form-error" %>
+    </div>
+
+    <div class="app-form-actions">
+      <%= link_to "Annuler", interviews_path, class: "btn-secondary" %>
+      <%= f.submit "Commencer", class: "btn-primary" %>
+    </div>
+  </div>
+<% end %>

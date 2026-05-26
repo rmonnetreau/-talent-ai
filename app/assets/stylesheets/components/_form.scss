@@ -1,5 +1,5 @@
-// ── Interview new ──────────────────────────────────────────────
-.interview-new {
+// ── Form page wrapper ──────────────────────────────────────────
+.form-page {
   max-width: 780px;
   margin: 0 auto;
   padding: 32px 24px;
@@ -31,8 +31,8 @@
   }
 }
 
-// ── Interview form ─────────────────────────────────────────────
-.interview-form {
+// ── App form ───────────────────────────────────────────────────
+.app-form {
   &-card {
     background: $bg-card;
     border: 1px solid $border;
@@ -72,10 +72,16 @@
   }
 
   &-textarea {
-    @extend .interview-form-input;
+    @extend .app-form-input;
     resize: vertical;
     min-height: 160px;
     line-height: 1.6;
+  }
+
+  &-error {
+    font-size: 14px;
+    color: #d9534f;
+    margin-top: 4px;
   }
 
   &-actions {
@@ -84,6 +90,40 @@
     align-items: center;
     gap: 10px;
     padding-top: 4px;
+  }
+}
+
+// ── Role picker ────────────────────────────────────────────────
+.role-picker {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+
+  &-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+    border: 1px solid $border;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+
+    input[type="radio"] { margin-top: 2px; flex-shrink: 0; }
+
+    &-body {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      strong { font-size: 14px; color: $text-dark; }
+      span   { font-size: 13px; color: $text-mid; line-height: 1.4; }
+    }
+
+    &:has(input:checked) {
+      border-color: $primary;
+      box-shadow: 0 0 0 3px rgba($primary, 0.1);
+    }
   }
 }
 

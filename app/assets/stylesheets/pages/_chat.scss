@@ -1,0 +1,53 @@
+/* ── Chat index ─────────────────────────────────────────── */
+
+.chat-show {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+.chat-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+
+.chat-header h1 {
+  font-size: 26px;
+  font-weight: 600;
+  margin: 0 0 4px;
+  color: #1a1a1a;
+}
+
+.chat-subtitle {
+  font-size: 14px;
+  color: #888;
+  margin: 0;
+}
+
+.chat-module-card {
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+  padding: 24px 28px;
+}
+
+.chat-module-messages {
+  margin-bottom: 30px;
+
+  span {
+    display: block;
+    text-transform: uppercase;
+    font-size: 12px;
+    margin-bottom: 15px;
+  }
+
+  p {
+    max-width: 600px;
+
+    &.light {
+      color: $text-muted;
+    }
+  }
+}
