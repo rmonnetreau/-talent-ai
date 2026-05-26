@@ -1,0 +1,94 @@
+<% interview.chats.joins(:feedback).each_with_index do |chat, idx| %>
+  <div id="feedback-modal-<%= chat.id %>" class="modal-overlay" hidden>
+    <div class="modal-box">
+
+      <div class="modal-header">
+        <div>
+          <h2 class="modal-title">Feedback — Simulation #<%= idx + 1 %></h2>
+          <p class="modal-subtitle">
+            <%= interview.job_title %> · <%= chat.chat_role.title %> ·
+            <%= l(chat.created_at.to_date, format: :short) %> ·
+            <%= pluralize(chat.messages.count, "échange", "échanges") %>
+          </p>
+        </div>
+        <button class="modal-close" onclick="closeModal('<%= chat.id %>')" aria-label="Fermer">×</button>
+      </div>
+
+      <% feedback = chat.feedback %>
+
+      <div class="modal-score-row">
+        <div class="modal-score-circle" style="--score: <%= feedback.global_score %>%">
+          <span class="modal-score-num"><%= feedback.global_score %></span>
+        </div>
+        <div>
+          <p class="modal-score-label">
+            <%= case feedback.global_score
+                when 9..10 then "Excellent niveau"
+                when 7..8  then "Très bonne préparation"
+                when 5..6  then "Bonne base à consolider"
+                else            "Des axes à travailler"
+                end %>
+          </p>
+          <p class="modal-score-advice"><%= simple_format(feedback.priority_advice) %></p>
+        </div>
+      </div>
+
+      <% if feedback.strengths.present? %>
+        <div class="modal-section">
+          <p class="modal-section-label">Points forts</p>
+          <div class="modal-tags">
+            <% feedback.strengths.split("\n").each do |strength| %>
+              <span class="modal-tag modal-tag--green"><%= markdown(strength.strip) %></span>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
+      <% if feedback.weaknesses.present? %>
+        <div class="modal-section">
+          <p class="modal-section-label">Points à améliorer</p>
+          <div class="modal-tags">
+            <% feedback.weaknesses.split("\n").each do |weakness| %>
+              <span class="modal-tag modal-tag--red"><%= markdown(weakness.strip) %></span>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
+      <% if feedback.best_answer.present? %>
+        <div class="modal-section">
+          <p class="modal-section-label">Meilleure réponse</p>
+          <div class="modal-answer modal-answer--green">
+            <p class="modal-answer-label">Meilleure réponse</p>
+            <p class="modal-answer-text">"<%= feedback.best_answer %>"</p>
+          </div>
+        </div>
+      <% end %>
+
+      <% if feedback.worst_answer.present? %>
+        <div class="modal-section">
+          <p class="modal-section-label">Réponse à retravailler</p>
+          <div class="modal-answer modal-answer--red">
+            <p class="modal-answer-label">À retravailler</p>
+            <p class="modal-answer-text">"<%= feedback.worst_answer %>"</p>
+          </div>
+        </div>
+      <% end %>
+
+      <% if feedback.priority_advice.present? %>
+        <div class="modal-tip">
+          <span class="modal-tip-icon">💡</span>
+          <p><strong>Conseil prioritaire :</strong> <%= feedback.priority_advice %></p>
+        </div>
+      <% end %>
+
+      <div class="modal-footer">
+        <%= link_to interview_chat_path(interview, chat), class: "btn-secondary" do %>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Voir la conversation
+        <% end %>
+      </div>
+
+    </div>
+  </div>
+<% end %>
