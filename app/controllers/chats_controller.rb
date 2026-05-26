@@ -1,25 +1,17 @@
 class ChatsController < ApplicationController
   def new
     @chat = Chat.new
-    @interviews = Interview.all.where(user: current_user)
-    @interview = @interviews.find(params[:interview_id])
+    @interview = secure_interview_for_user
   end
 
   def create
-    @interviews = Interview.all.where(user: current_user)
-    @interview = @interviews.find(params[:interview_id])
-
-    @chat = Chat.new(title: "Untitled")
-    @chat.interview = @interview
-
-    # temporary, must be the role selected by the user
-    @chat.chat_role = ChatRole.find_by(id: 4)
+    @chat = Chat.new(chat_params)
+    @chat.interview = secure_interview_for_user
 
     if @chat.save
       redirect_to chat_path(@chat)
     else
-      @chats = @interview.chats
-      render "interviews/show"
+      render :new, status: :unprocessable_entity
     end
   end
 
@@ -27,5 +19,16 @@ class ChatsController < ApplicationController
     @chat = Chat.joins(:interview).where(interviews: { user: current_user }).find(params[:id])
     @interview = @chat.interview
     @message = Message.new
+  end
+
+  private
+
+  def secure_interview_for_user
+    @interviews = Interview.all.where(user: current_user)
+    @interviews.find(params[:interview_id])
+  end
+
+  def chat_params
+    params.require(:chat).permit(:title, :chat_role_id)
   end
 end
