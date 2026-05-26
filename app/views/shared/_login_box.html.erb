@@ -1,36 +1,30 @@
 <%# Shared login box rendered on homepage. Shows only for guests. %>
 <% unless user_signed_in? %>
-  <div class="container mt-4">
-    <div class="row justify-content-center">
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-body">
-            <h2>Log in</h2>
-            <% resource ||= User.new %>
-            <% resource_name ||= :user %>
-            <% devise_mapping ||= Devise.mappings[:user] %>
+    <div class="card">
+      <div class="card-body">
+        <h2>Se connecter</h2>
+        <% resource ||= User.new %>
+        <% resource_name ||= :user %>
+        <% devise_mapping ||= Devise.mappings[:user] %>
 
-            <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-              <div class="form-inputs">
-                <%= f.input :email,
-                            required: false,
-                            autofocus: true,
-                            input_html: { autocomplete: "email" } %>
-                <%= f.input :password,
-                            required: false,
-                            input_html: { autocomplete: "current-password" } %>
-                <%= f.input :remember_me, as: :boolean if devise_mapping.rememberable? %>
-              </div>
-
-              <div class="form-actions">
-                <%= f.button :submit, "Log in" %>
-              </div>
-            <% end %>
-
-            <%= render "devise/shared/links", resource: resource, resource_name: resource_name, devise_mapping: devise_mapping %>
+        <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+          <div class="form-inputs">
+            <%= f.input :email,
+                        required: false,
+                        autofocus: true,
+                        input_html: { autocomplete: "email" } %>
+            <%= f.input :password,
+                        required: false,
+                        input_html: { autocomplete: "current-password" } %>
+            <%= f.input :remember_me, as: :boolean if devise_mapping.rememberable? %>
           </div>
-        </div>
+
+          <div class="form-actions">
+            <%= f.button :submit, "Se connecter", class: "btn btn-primary w-100" %>
+          </div>
+        <% end %>
+
+        <%= render "devise/shared/links", resource: resource, resource_name: resource_name, devise_mapping: devise_mapping %>
       </div>
     </div>
-  </div>
 <% end %>
