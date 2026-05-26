@@ -12,7 +12,7 @@
       <div class="chat-module-messages d-flex flex-column mb-4 <%= message.role == "user" ? "align-items-end" : "align-items-start" %>">
         <span><%= message.role == "user" ? "Vous" : message.role %></span>
         <p class="<%= message.role == "user" ? "light" : ""%>">
-          <%= raw(message.content) %>
+          <%= raw(markdown(message.content)) %>
         </p>
       </div>
     <% end %>
@@ -24,3 +24,4 @@
     </div>
   </div>
 </div>
+<div id="bottom"></div>
