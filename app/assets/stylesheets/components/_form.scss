@@ -130,6 +130,8 @@
 // ── Secondary button ───────────────────────────────────────────
 .btn-secondary {
   display: inline-flex;
+  justify-content: center;
+  gap: 8px;
   align-items: center;
   background: #fff;
   color: $text-dark;

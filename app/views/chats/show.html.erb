@@ -4,7 +4,7 @@
       <h1><%= @chat.title %>, pour <%= @interview.job_title %></h1>
       <p class="chat-subtitle">Recruteur <%= @chat_role.title %></p>
     </div>
-    <button class="btn btn-outline-secondary">Générer mes feedbacks</button>
+    <%= button_to "Générer mes feedbacks", chat_feedbacks_path(@chat), class: "btn btn-success" %>
   </div>
 
   <div class="chat-module-card">
