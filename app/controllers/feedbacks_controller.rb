@@ -33,7 +33,7 @@ class FeedbacksController < ApplicationController
       recommended_method: data["recommended_method"]
     )
     @chat.reload
-    redirect_to chat_path(@chat), notice: "Feedback généré."
+    redirect_to interviews_path, notice: "Feedback généré."
   end
 
   def messages_history
