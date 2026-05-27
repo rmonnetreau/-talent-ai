@@ -103,10 +103,10 @@
 .icon-btn:hover { color: #555; background: #f4f4f4; }
 
 .interview-description {
-  font-size: 14px;
-  color: #555;
-  margin: 0 0 20px;
   line-height: 1.5;
+  max-height: calc(1.5em * 4);
+  overflow: hidden;
+  color: #555;
 }
 
 /* ── Chats sections ───────────────────────────────────────────── */

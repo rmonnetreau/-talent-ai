@@ -37,7 +37,9 @@
   </div>
 
   <div class="interview-card-body" id="interview-body-<%= interview.id %>">
-    <p class="interview-description"><%= interview.job_description %></p>
+    <p class="interview-description">
+      <%= truncate(interview.job_description, length: 300) %>
+    </p>
 
     <% finished_chats = interview.chats.joins(:feedback).order(created_at: :asc) %>
     <% ongoing_chats = interview.chats.where.missing(:feedback).order(created_at: :asc) %>
