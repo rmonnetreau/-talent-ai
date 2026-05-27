@@ -8,23 +8,11 @@
   </div>
 
   <div class="chat-module-card">
-    <% last_assistant = @chat.messages.select { |m| m.role == "assistant" }.last %>
-    <% @chat.messages.each do |message| %>
-      <% is_assistant = message.role == "assistant" %>
-      <div class="chat-module-messages d-flex flex-column mb-4 <%= is_assistant ? "align-items-start" : "align-items-end" %>"
-        <%= is_assistant ? "data-controller=tts data-tts-autoplay-value=#{message == last_assistant}" : "" %>>
-        <span><%= is_assistant ? message.role : "Vous" %></span>
-        <div class="<%= is_assistant ? "" : "light" %>">
-          <%= raw(markdown(message.content)) %>
-        </div>
-      </div>
-    <% end %>
-
-    <%= simple_form_for [@chat, @message] do |f| %>
-      <%= f.input :content, label: "Répondre", required: true, placeholder: "Ecris ta réponse" %>
-      <%= f.button :submit, 'Submit', class: 'btn btn-primary' %>
-    <% end %>
+    <div id="messages">
+      <%= render "messages/messages", messages: @chat.messages %>
+    </div>
+    <div id="new_message_container">
+      <%= render "messages/form", chat: @chat, message: @message %>
     </div>
   </div>
 </div>
-<div id="bottom"></div>
