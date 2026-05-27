@@ -1,0 +1,5 @@
+<% last_assistant = messages.select { |m| m.role == "assistant" }.last %>
+
+<% messages.each do |message| %>
+  <%= render "messages/message", message: message, last_assistant: last_assistant %>
+<% end %>

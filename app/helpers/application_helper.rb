@@ -1,5 +1,7 @@
 module ApplicationHelper
   def markdown(text)
+    return "" if text.blank?
+
     renderer = Redcarpet::Render::HTML.new(
       filter_html: true,
       hard_wrap: true

@@ -9,14 +9,27 @@ class MessagesController < ApplicationController
     @message.role = "user"
 
     if @message.save
-      ruby_llm_chat = RubyLLM.chat(model: "gemini-2.5-flash")
-      response = ruby_llm_chat.with_instructions(system_promt).ask(@message.content)
-      Message.create(role: "assistant", content: response.content, chat: @chat)
-      redirect_to chat_path(@chat, anchor: "bottom")
+      @ruby_llm_chat = RubyLLM.chat(model: "gpt-4o")
+      build_conversation_history
+      response = @ruby_llm_chat.with_instructions(system_promt).ask(@message.content)
+
+      @assistant_message = Message.create(role: "assistant", content: response.content, chat: @chat)
+
+      respond_to do |format|
+        format.turbo_stream # renders `app/views/messages/create.turbo_stream.erb`
+        format.html { redirect_to chat_path(@chat) }
+      end
     else
       @interview = @chat.interview
       @chat_role = ChatRole.find(@chat.chat_role_id)
-      render "chats/show", status: :unprocessable_entity
+
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.update("new_message_container", partial: "messages/form",
+                                                                            locals: { chat: @chat, message: @message })
+        end
+        format.html { render "chats/show", status: :unprocessable_entity }
+      end
     end
   end
 
@@ -24,5 +37,11 @@ class MessagesController < ApplicationController
 
   def message_params
     params.require(:message).permit(:content)
+  end
+
+  def build_conversation_history
+    @chat.messages.where.not(id: @message.id).each do |message|
+      @ruby_llm_chat.add_message(message)
+    end
   end
 end

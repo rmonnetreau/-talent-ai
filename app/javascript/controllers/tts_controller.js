@@ -6,7 +6,16 @@ export default class extends Controller {
   connect() {
     if (!window.speechSynthesis) return
     this.addSpeakerButton()
-    if (this.autoplayValue) this.speak()
+    if (this.autoplayValue) this.speakWhenReady()
+  }
+
+  speakWhenReady() {
+    // speechSynthesis.speak() is blocked after async network requests in Chrome/Safari.
+    // Unlocking it with a silent utterance first re-establishes the user gesture context.
+    const unlock = new SpeechSynthesisUtterance("")
+    unlock.volume = 0
+    unlock.onend = () => this.speak()
+    speechSynthesis.speak(unlock)
   }
 
   disconnect() {
@@ -23,7 +32,7 @@ export default class extends Controller {
 
   speak() {
     speechSynthesis.cancel()
-    const text = this.element.querySelector("p")?.textContent?.trim()
+    const text = this.element.querySelector(".message-body")?.textContent?.trim()
     if (!text) return
 
     const utterance = new SpeechSynthesisUtterance(text)

@@ -4,41 +4,15 @@
       <h1><%= @chat.title %>, pour <%= @interview.job_title %></h1>
       <p class="chat-subtitle">Recruteur <%= @chat_role.title %></p>
     </div>
-      <button class="btn btn-outline-secondary">Générer mes feedbacks</button>
+    <%= button_to "Générer mes feedbacks", chat_feedbacks_path(@chat), class: "btn btn-success" %>
   </div>
 
   <div class="chat-module-card">
-    <% last_assistant = @chat.messages.select { |m| m.role == "assistant" }.last %>
-    <% @chat.messages.each do |message| %>
-      <% is_assistant = message.role == "assistant" %>
-      <div class="chat-module-messages d-flex flex-column mb-4 <%= is_assistant ? "align-items-start" : "align-items-end" %>"
-        <%= is_assistant ? "data-controller=tts data-tts-autoplay-value=#{message == last_assistant}" : "" %>>
-        <span><%= is_assistant ? message.role : "Vous" %></span>
-        <div class="<%= is_assistant ? "" : "light" %>">
-          <%= raw(markdown(message.content)) %>
-        </div>
-      </div>
-    <% end %>
-   <%= simple_form_for [@chat, @message],
-       html: { data: { controller: "speech" } } do |f| %>
-     <%= f.input :content,
-       label: "Répondre",
-       required: true,
-       placeholder: "Écris ta réponse",
-       input_html: {
-         data: { speech_target: "input" }
-       } %>
-     <div class="chat-form-actions">
-       <button type="button"
-               class="mic-btn"
-               data-action="click->speech#toggle"
-               data-speech-target="button">
-         🎙️ Dicter
-       </button>
-       <%= f.button :submit, "Submit", class: "btn btn-primary" %>
-     </div>
-   <% end %>
+    <div id="messages">
+      <%= render "messages/messages", messages: @chat.messages %>
+    </div>
+    <div id="new_message_container">
+      <%= render "messages/form", chat: @chat, message: @message %>
     </div>
   </div>
 </div>
-<div id="bottom"></div>
