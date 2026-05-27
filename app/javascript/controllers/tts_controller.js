@@ -1,0 +1,60 @@
+import { Controller } from "@hotwired/stimulus"
+
+export default class extends Controller {
+  static values = { autoplay: Boolean }
+
+  connect() {
+    if (!window.speechSynthesis) return
+    this.addSpeakerButton()
+    if (this.autoplayValue) this.speak()
+  }
+
+  disconnect() {
+    speechSynthesis.cancel()
+  }
+
+  toggleSpeech() {
+    if (speechSynthesis.speaking) {
+      this.stop()
+    } else {
+      this.speak()
+    }
+  }
+
+  speak() {
+    speechSynthesis.cancel()
+    const text = this.element.querySelector("p")?.textContent?.trim()
+    if (!text) return
+
+    const utterance = new SpeechSynthesisUtterance(text)
+    utterance.lang = "fr-FR"
+    utterance.rate = 0.9
+    utterance.onstart = () => this.setPlaying(true)
+    utterance.onend = () => this.setPlaying(false)
+    utterance.onerror = () => this.setPlaying(false)
+    speechSynthesis.speak(utterance)
+  }
+
+  stop() {
+    speechSynthesis.cancel()
+    this.setPlaying(false)
+  }
+
+  addSpeakerButton() {
+    const btn = document.createElement("button")
+    btn.type = "button"
+    btn.className = "tts-btn"
+    btn.innerHTML = "🔊"
+    btn.title = "Écouter"
+    btn.setAttribute("data-action", "click->tts#toggleSpeech")
+    this.speakerBtn = btn
+    this.element.appendChild(btn)
+  }
+
+  setPlaying(playing) {
+    if (!this.speakerBtn) return
+    this.speakerBtn.innerHTML = playing ? "⏹️" : "🔊"
+    this.speakerBtn.title = playing ? "Arrêter" : "Écouter"
+    this.speakerBtn.classList.toggle("tts-btn--playing", playing)
+  }
+}
