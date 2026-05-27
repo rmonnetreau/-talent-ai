@@ -4,24 +4,15 @@
       <h1><%= @chat.title %>, pour <%= @interview.job_title %></h1>
       <p class="chat-subtitle">Recruteur <%= @chat_role.title %></p>
     </div>
-      <button class="btn btn-outline-secondary">Générer mes feedbacks</button>
+    <button class="btn btn-outline-secondary">Générer mes feedbacks</button>
   </div>
 
   <div class="chat-module-card">
-    <% @chat.messages.each do |message| %>
-      <div class="chat-module-messages d-flex flex-column mb-4 <%= message.role == "user" ? "align-items-end" : "align-items-start" %>">
-        <span><%= message.role == "user" ? "Vous" : message.role %></span>
-        <p class="<%= message.role == "user" ? "light" : ""%>">
-          <%= raw(markdown(message.content)) %>
-        </p>
-      </div>
-    <% end %>
-
-    <%= simple_form_for [@chat, @message] do |f| %>
-      <%= f.input :content, label: "Répondre", required: true, placeholder: "Ecris ta réponse" %>
-      <%= f.button :submit, 'Submit', class: 'btn btn-primary' %>
-    <% end %>
+    <div id="messages">
+      <%= render "messages/messages", messages: @chat.messages %>
+    </div>
+    <div id="new_message_container">
+      <%= render "messages/form", chat: @chat, message: @message %>
     </div>
   </div>
 </div>
-<div id="bottom"></div>
