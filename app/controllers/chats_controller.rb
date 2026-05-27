@@ -13,6 +13,7 @@ class ChatsController < ApplicationController
                      content: "Bonjour ! Pour commencer, parlez-moi de votre parcours et expliquez moi pourquoi vous avez choisi de répondre à notre annonce", chat: @chat) # rubocop:disable Layout/LineLength
       redirect_to chat_path(@chat)
     else
+      @interview = @chat.interview
       render :new, status: :unprocessable_entity
     end
   end
