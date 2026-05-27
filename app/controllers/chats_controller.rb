@@ -6,7 +6,8 @@ class ChatsController < ApplicationController
 
   def create
     @chat = Chat.new(chat_params)
-    @chat.interview = secure_interview_for_user
+    @interview = secure_interview_for_user
+    @chat.interview = @interview
 
     if @chat.save
       Message.create(role: "assistant",
