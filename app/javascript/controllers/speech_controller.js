@@ -52,16 +52,19 @@ export default class extends Controller {
     }
   }
 
-  start() {
-    this.finalTranscript = this.inputTarget.value || ""
-    this.isListening = true
-    this.buttonTarget.innerText = "⏹️ Stop"
-    this.recognition.start()
-  }
+start() {
+  this.finalTranscript = this.inputTarget.value || ""
+  this.isListening = true
+  this.buttonTarget.innerHTML =
+    '<i class="fa-solid fa-stop"></i>'
+  this.recognition.start()
+}
 
-  stop() {
-    this.isListening = false
-    this.buttonTarget.innerText = "🎙️ Dicter"
-    this.recognition.stop()
-  }
+stop() {
+
+  this.isListening = false
+  this.buttonTarget.innerHTML =
+    '<i class="fa-solid fa-microphone"></i>'
+  this.recognition.stop()
+}
 }
