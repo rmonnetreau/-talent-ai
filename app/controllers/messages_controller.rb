@@ -9,7 +9,7 @@ class MessagesController < ApplicationController
     @message.role = "user"
 
     if @message.save
-      ruby_llm_chat = RubyLLM.chat(model: "gpt-4o")
+      ruby_llm_chat = RubyLLM.chat(model: "gemini-2.5-flash")
       response = ruby_llm_chat.with_instructions(system_promt).ask(@message.content)
       Message.create(role: "assistant", content: response.content, chat: @chat)
       redirect_to chat_path(@chat, anchor: "bottom")
