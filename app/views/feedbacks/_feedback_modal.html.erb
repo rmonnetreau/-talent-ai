@@ -1,5 +1,5 @@
 <% interview.chats.joins(:feedback).each_with_index do |chat, idx| %>
-  <div id="feedback-modal-<%= chat.feedback.id %>" class="modal-overlay" hidden>
+  <div id="feedback-modal-<%= chat.id %>" class="modal-overlay" hidden>
     <div class="modal-box">
 
       <div class="modal-header">
@@ -11,7 +11,7 @@
             <%= pluralize(chat.messages.count, "échange", "échanges") %>
           </p>
         </div>
-        <button class="modal-close" onclick="closeModal('<%= chat.feedback.id %>')" aria-label="Fermer">×</button>
+        <button class="modal-close" onclick="closeModal('<%= chat.id %>')" aria-label="Fermer">×</button>
       </div>
 
       <% feedback = chat.feedback %>
@@ -29,7 +29,7 @@
                 else            "Des axes à travailler"
                 end %>
           </p>
-          <p class="modal-score-advice"><%= markdown(feedback.priority_advice&.strip)  %></p>
+          <p class="modal-score-advice"><%= simple_format(feedback.priority_advice) %></p>
         </div>
       </div>
 
@@ -38,7 +38,7 @@
           <p class="modal-section-label">Points forts</p>
           <div class="modal-tags">
             <% feedback.strengths.split("\n").each do |strength| %>
-              <span class="modal-tag modal-tag--green"><%= markdown(strength&.strip) %></span>
+              <span class="modal-tag modal-tag--green"><%= markdown(strength.strip) %></span>
             <% end %>
           </div>
         </div>
@@ -49,7 +49,7 @@
           <p class="modal-section-label">Points à améliorer</p>
           <div class="modal-tags">
             <% feedback.weaknesses.split("\n").each do |weakness| %>
-              <span class="modal-tag modal-tag--red"><%= markdown(weakness&.strip) %></span>
+              <span class="modal-tag modal-tag--red"><%= markdown(weakness.strip) %></span>
             <% end %>
           </div>
         </div>
@@ -59,7 +59,8 @@
         <div class="modal-section">
           <p class="modal-section-label">Meilleure réponse</p>
           <div class="modal-answer modal-answer--green">
-            <p class="modal-answer-text">"<%= markdown(feedback.best_answer) %>"</p>
+            <p class="modal-answer-label">Meilleure réponse</p>
+            <p class="modal-answer-text">"<%= feedback.best_answer %>"</p>
           </div>
         </div>
       <% end %>
@@ -68,7 +69,8 @@
         <div class="modal-section">
           <p class="modal-section-label">Réponse à retravailler</p>
           <div class="modal-answer modal-answer--red">
-            <p class="modal-answer-text">"<%= markdown(feedback.worst_answer) %>"</p>
+            <p class="modal-answer-label">À retravailler</p>
+            <p class="modal-answer-text">"<%= feedback.worst_answer %>"</p>
           </div>
         </div>
       <% end %>
@@ -76,14 +78,7 @@
       <% if feedback.priority_advice.present? %>
         <div class="modal-tip">
           <span class="modal-tip-icon">💡</span>
-          <%= markdown(feedback.priority_advice) %></p>
-        </div>
-      <% end %>
-
-      <% if feedback.recommended_method.present? %>
-        <div class="modal-answer modal-answer--green">
-          <span class="modal-tip-icon">💡</span>
-          <%= markdown(feedback.recommended_method) %></p>
+          <p><strong>Conseil prioritaire :</strong> <%= feedback.priority_advice %></p>
         </div>
       <% end %>
 
@@ -93,6 +88,7 @@
           Voir la conversation
         <% end %>
       </div>
+
     </div>
   </div>
 <% end %>

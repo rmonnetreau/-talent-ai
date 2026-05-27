@@ -23,16 +23,5 @@ Tu dois générer un objet JSON unique et strict, sans aucun texte explicatif av
 
 {
   "global_score": 75,
-
-  "strengths": "### 👍 Points Forts\n- **Pertinence Technique** : Très bonne compréhension d'Active Record et des problématiques N+1 avec un exemple concret sur `includes`.\n- **Structure du discours** : Réponses globalement claires et pédagogiques sur le cycle de vie d'une requête Rails.\n- **Posture** : Bonne capacité à vulgariser et à rester calme face aux questions techniques du recruteur.",
-
-  "weaknesses": "### 🎯 Axes d'Amélioration\n- **Précision technique** : Explication un peu floue sur la différence exacte entre Turbo et Stimulus.\n- **Impact business** : Peu d'éléments chiffrés ou de résultats concrets pour valoriser les réalisations.\n- **Structure STAR** : Certaines réponses partent dans trop de détails avant d'arriver au résultat final.",
-
-  "best_answer": "### 💬 Meilleure Réponse\nL'explication détaillée de la résolution d'un problème de performances lié aux requêtes N+1 avec l'utilisation de `includes`, en expliquant le contexte, la solution mise en place et le gain obtenu.",
-
-  "worst_answer": "### ⚠️ Réponse la Plus Faible\nLa réponse concernant la différence entre Turbo et Stimulus est restée trop générique et manquait d'exemples précis d'utilisation dans une application Rails moderne.",
-
-  "priority_advice": "### 🛠️ Conseil Prioritaire\nPrépare 2 ou 3 histoires techniques très concrètes avec la méthode STAR, incluant systématiquement : le contexte, ton action précise, les difficultés rencontrées et les résultats obtenus (performance, temps gagné, impact utilisateur, etc.).",
-
-  "recommended_method": "### 📚 Méthode Recommandée\nMéthode STAR (Situation, Tâche, Action, Résultat) pour structurer les réponses comportementales et techniques lors des prochains entretiens."
+  "feedback_coaching": "### 📊 Avis du Coach\n[Insère ici un résumé global de 2-3 phrases sur la performance et la décision : exemple 'Passer au tour suivant' ou 'À retravailler'].\n\n### 👍 Points Forts\n- **[Axe Technique/Structure]** : [Exemple précis et textuel tiré de l'échange]\n- **[Axe Posture/Soft Skills]** : [Exemple précis et textuel tiré de l'échange]\n\n### 🎯 Axes d'Amélioration\n- **[Lacune ou formulation faible]** : [Exemple précis tiré de l'échange]\n- **[Élément manquant]** : [Ce que le candidat aurait dû mentionner pour valoriser son impact]\n\n### 🛠️ Plan d'Action (3 conseils clés)\n1. **Sur le fond / la structure :** [Conseil opérationnel pour le prochain entretien]\n2. **Exemple de reformulation :** [Prends une réponse faible du candidat et propose une version optimisée]\n3. **Sur la posture :** [Conseil comportemental adapté au profil du recruteur]"
 }
