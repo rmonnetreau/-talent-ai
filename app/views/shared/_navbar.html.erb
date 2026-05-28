@@ -25,6 +25,7 @@
             <span class="avatar-text"><%= current_user.email[0..1].upcase %></span>
           </a>
             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+              <%= link_to "Profil", profile_path, class: "dropdown-item" %>
               <%= link_to "Déconnexion", destroy_user_session_path, data: {turbo_method: :delete}, class: "dropdown-item" %>
             </div>
           </li>
