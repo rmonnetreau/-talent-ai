@@ -4,8 +4,10 @@ export default class extends Controller {
   static targets = ["button", "status"]
 
   connect() {
+    console.log("[VoiceInput] connect()")
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
     if (!SpeechRecognition) {
+      console.warn("[VoiceInput] SpeechRecognition non disponible")
       this.statusTarget.textContent = "Reconnaissance vocale non disponible sur ce navigateur."
       this.buttonTarget.disabled = true
       return
@@ -19,6 +21,7 @@ export default class extends Controller {
     this.recognition.onresult = (e) => this.onSpeechResult(e)
     this.recognition.onerror = (e) => this.onSpeechError(e)
     this.recognition.onend = () => {
+      console.log("[VoiceInput] recognition.onend — state:", this.state)
       if (this.state === "listening") this.setState("idle")
     }
 
@@ -26,59 +29,86 @@ export default class extends Controller {
     document.addEventListener("tts:ended", this.boundTtsEnded)
 
     this.setState("idle")
+    console.log("[VoiceInput] prêt")
   }
 
   disconnect() {
     document.removeEventListener("tts:ended", this.boundTtsEnded)
     if (this.recognition) this.recognition.abort()
+    clearTimeout(this.stopTimeout)
     clearTimeout(this.processingTimeout)
   }
 
   startListening() {
     if (this.state !== "idle") return
+    console.log("[VoiceInput] startListening()")
     this.setState("listening")
     try {
       this.recognition.start()
+      console.log("[VoiceInput] recognition.start() OK")
     } catch (e) {
+      console.error("[VoiceInput] recognition.start() ERREUR:", e)
       this.setState("idle")
     }
   }
 
   stopListening() {
     if (this.state !== "listening") return
-    this.recognition.stop()
+    console.log("[VoiceInput] stopListening() — reconnaissance en cours de finalisation")
+    // Délai pour laisser le temps à Chrome d'envoyer l'audio à Google et recevoir le résultat
+    this.stopTimeout = setTimeout(() => {
+      console.log("[VoiceInput] recognition.stop()")
+      this.recognition.stop()
+    }, 400)
   }
 
   onSpeechResult(event) {
+    clearTimeout(this.stopTimeout)
     const transcript = event.results[0][0].transcript.trim()
+    console.log("[VoiceInput] onSpeechResult — transcript:", transcript)
+
     if (!transcript) {
+      console.warn("[VoiceInput] transcript vide")
       this.setState("idle")
       return
     }
 
-    this.setState("processing")
+    this.statusTarget.textContent = `"${transcript}"`
+    this.state = "processing"
+    this.buttonTarget.dataset.state = "processing"
+    this.buttonTarget.disabled = true
 
     const container = document.getElementById("new_message_container")
     const form = container?.querySelector("form")
     const input = container?.querySelector("textarea, input[name*='content']")
 
+    console.log("[VoiceInput] container:", container)
+    console.log("[VoiceInput] form:", form)
+    console.log("[VoiceInput] input:", input)
+
     if (!form || !input) {
+      console.error("[VoiceInput] formulaire ou input introuvable !")
       this.statusTarget.textContent = "Erreur : formulaire introuvable."
       setTimeout(() => this.setState("idle"), 2000)
       return
     }
 
     input.value = transcript
+    console.log("[VoiceInput] input.value défini:", input.value)
 
-    // Safety reset if TTS never fires (e.g. API error)
     this.processingTimeout = setTimeout(() => {
       if (this.state === "processing") this.setState("idle")
     }, 30000)
 
-    form.requestSubmit()
+    setTimeout(() => {
+      console.log("[VoiceInput] requestSubmit()")
+      this.statusTarget.textContent = "Réfléchit…"
+      form.requestSubmit()
+    }, 600)
   }
 
   onSpeechError(event) {
+    console.error("[VoiceInput] onerror:", event.error)
     const messages = {
       "no-speech": "Aucune parole détectée, réessayez.",
       "network": "Erreur réseau (Speech API).",
@@ -92,6 +122,7 @@ export default class extends Controller {
   }
 
   onTtsEnded() {
+    console.log("[VoiceInput] tts:ended reçu")
     clearTimeout(this.processingTimeout)
     if (this.state === "processing") this.setState("idle")
   }
@@ -99,7 +130,7 @@ export default class extends Controller {
   setState(state) {
     this.state = state
     const labels = {
-      idle: "Appuyez pour parler",
+      idle: "Maintenez pour parler",
       listening: "Écoute…",
       processing: "Réfléchit…"
     }
