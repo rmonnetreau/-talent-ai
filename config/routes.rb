@@ -9,7 +9,9 @@ Rails.application.routes.draw do
   end
 
   resources :chats, only: :show do
-    resources :messages, only: [:create]
+    resources :messages, only: [:create] do
+      member { get :audio }
+    end
     resources :feedbacks, only: [:create]
   end
 end

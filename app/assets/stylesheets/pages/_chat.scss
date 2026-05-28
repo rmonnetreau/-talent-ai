@@ -1,4 +1,4 @@
-/* ── Chat index ─────────────────────────────────────────── */
+/* ── Chat ───────────────────────────────────────────────── */
 
 .chat-show {
   max-width: 900px;
@@ -18,16 +18,16 @@
 }
 
 .chat-header h1 {
+  margin: 0 0 4px;
   font-size: 26px;
   font-weight: 600;
-  margin: 0 0 4px;
   color: #1a1a1a;
 }
 
 .chat-subtitle {
+  margin: 0;
   font-size: 14px;
   color: #888;
-  margin: 0;
 }
 
 .chat-module-card {
@@ -69,4 +69,71 @@
       border-bottom-right-radius: 4px;
     }
   }
+}
+
+/* ── Voice input panel ───────────────────────────────────── */
+
+.voice-input-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 0 16px;
+  gap: 16px;
+}
+
+.voice-status {
+  font-size: 14px;
+  color: #888;
+  margin: 0;
+  min-height: 20px;
+  transition: color 0.2s;
+}
+
+.voice-mic-btn {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid #1a1a1a;
+  background: #fff;
+  font-size: 32px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, opacity 0.15s, transform 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  -webkit-user-select: none;
+
+  &:hover:not(:disabled) {
+    background: #f5f5f5;
+  }
+
+  &[data-state="listening"] {
+    background: #ff4444;
+    border-color: #ff4444;
+    animation: mic-pulse 1s ease-in-out infinite alternate;
+  }
+
+  &[data-state="processing"] {
+    background: #f0f0f0;
+    border-color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+@keyframes mic-pulse {
+  from { transform: scale(1);    box-shadow: 0 0 0 0   rgba(255, 68, 68, 0.4); }
+  to   { transform: scale(1.06); box-shadow: 0 0 0 14px rgba(255, 68, 68, 0);   }
+}
+
+.voice-counter {
+  font-size: 12px;
+  color: #bbb;
+  margin: 0;
 }

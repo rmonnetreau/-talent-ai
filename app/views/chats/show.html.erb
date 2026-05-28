@@ -1,4 +1,4 @@
-<div class="chat-show">
+<div class="chat-show" data-controller="voice-input">
   <div class="chat-header">
     <div class="chat-header-title">
       <h1><%= @chat.title %>, pour <%= @interview.job_title %></h1>
@@ -11,8 +11,24 @@
     <div id="messages">
       <%= render "messages/messages", messages: @chat.messages %>
     </div>
-    <div id="new_message_container">
-      <%= render "messages/form", chat: @chat, message: @message %>
-    </div>
+  </div>
+
+  <div class="voice-input-panel">
+    <p class="voice-status" data-voice-input-target="status">Appuyez pour parler</p>
+
+    <button type="button"
+            class="voice-mic-btn"
+            data-voice-input-target="button"
+            data-action="mousedown->voice-input#startListening mouseup->voice-input#stopListening touchstart->voice-input#startListening touchend->voice-input#stopListening">
+      🎤
+    </button>
+
+    <p class="voice-counter">
+      <%= @chat.messages.where(role: "user").count %> / <%= Message::MAX_USER_MESSAGES %> messages
+    </p>
+  </div>
+
+  <div id="new_message_container" class="d-none">
+    <%= render "messages/form", chat: @chat, message: @message %>
   </div>
 </div>

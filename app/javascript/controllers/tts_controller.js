@@ -11,7 +11,7 @@ export default class extends Controller {
 
   speakWhenReady() {
     // speechSynthesis.speak() is blocked after async network requests in Chrome/Safari.
-    // Unlocking it with a silent utterance first re-establishes the user gesture context.
+    // A silent utterance re-establishes the user gesture context.
     const unlock = new SpeechSynthesisUtterance("")
     unlock.volume = 0
     unlock.onend = () => this.speak()
@@ -39,8 +39,14 @@ export default class extends Controller {
     utterance.lang = "fr-FR"
     utterance.rate = 0.9
     utterance.onstart = () => this.setPlaying(true)
-    utterance.onend = () => this.setPlaying(false)
-    utterance.onerror = () => this.setPlaying(false)
+    utterance.onend = () => {
+      this.setPlaying(false)
+      document.dispatchEvent(new CustomEvent("tts:ended"))
+    }
+    utterance.onerror = () => {
+      this.setPlaying(false)
+      document.dispatchEvent(new CustomEvent("tts:ended"))
+    }
     speechSynthesis.speak(utterance)
   }
 
