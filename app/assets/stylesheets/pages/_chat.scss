@@ -1,5 +1,19 @@
 /* ── Chat ───────────────────────────────────────────────── */
 
+.chat-mode-badge {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+  background: #f0f0f0;
+  color: #555;
+
+  &--audio { background: #ede9fe; color: #6d28d9; }
+  &--text  { background: #e0f2fe; color: #0369a1; }
+}
+
 .chat-show {
   max-width: 900px;
   margin: 0 auto;

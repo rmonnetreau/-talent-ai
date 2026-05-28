@@ -1,4 +1,17 @@
 <div class="chat-show" data-controller="voice-input">
+  <p class="chat-mode-badge" id="chat-mode-badge"></p>
+  <script>
+    (function() {
+      var key = "chat_mode_<%= @chat.id %>"
+      var urlMode = new URLSearchParams(window.location.search).get("mode")
+      var mode = urlMode || localStorage.getItem(key) || "audio"
+      if (urlMode) localStorage.setItem(key, mode)
+      var badge = document.getElementById("chat-mode-badge")
+      badge.className = "chat-mode-badge chat-mode-badge--" + mode
+      badge.textContent = mode === "audio" ? "🎤 Mode audio" : "⌨️ Mode texte"
+    })()
+  </script>
+
   <div class="chat-header">
     <div class="chat-header-title">
       <h1><%= @chat.title %>, pour <%= @interview.job_title %></h1>
