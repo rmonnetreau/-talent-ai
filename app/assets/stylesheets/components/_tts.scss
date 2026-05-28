@@ -96,3 +96,75 @@
 .chat-send-btn i {
   font-size: 15px;
 }
+
+.interviews-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 22px 0 24px;
+}
+
+.interviews-search-input {
+  width: 100%;
+  max-width: 430px;
+  height: 42px;
+  border: 1px solid #ded8ff;
+  border-radius: 999px;
+  padding: 0 18px;
+  font-size: 14px;
+  background: #fbfaff;
+  color: #222;
+}
+
+.interviews-search-input:focus {
+  outline: none;
+  border-color: #5b4cf0;
+  box-shadow: 0 0 0 3px rgba(91, 76, 240, 0.12);
+}
+
+.interviews-filter-tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.interviews-filter-tab,
+.interviews-sort-btn {
+  height: 42px;
+  border: 1px solid #ded8ff;
+  background: #fbfaff;
+  color: #5b4cf0;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.interviews-filter-tab {
+  padding: 0 16px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.interviews-sort-btn {
+  width: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.interviews-filter-tab:hover,
+.interviews-sort-btn:hover {
+  background: #f2efff;
+  border-color: #c8bfff;
+}
+
+.interviews-filter-tab.active {
+  background: #f1edff;
+  color: #4f46e5;
+  border-color: #bfb5ff;
+  box-shadow: inset 0 0 0 1px rgba(91, 76, 240, 0.12);
+}
+
+.interviews-sort-btn i {
+  font-size: 14px;
+  color: #5b4cf0;
+}
