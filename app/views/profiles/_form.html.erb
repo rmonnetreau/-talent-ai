@@ -1,0 +1,22 @@
+<%= simple_form_for(@profile, url: profile_path, html: { multipart: true }) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="mb-3">
+    <%= f.input :first_name, label: "Prénom", input_html: { autocomplete: "given-name" } %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.input :last_name, label: "Nom", input_html: { autocomplete: "family-name" } %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.input :cv,
+                as: :file,
+                label: "CV",
+                hint: (@profile.cv.attached? ? link_to("Voir le CV actuel", rails_blob_path(@profile.cv, disposition: "attachment")) : content_tag(:span, "Aucun CV sélectionné")) %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit, class: "btn btn-primary" %>
+  </div>
+<% end %>

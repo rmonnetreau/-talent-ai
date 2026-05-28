@@ -48,11 +48,13 @@
       <div class="chats-section">
         <p class="chats-section-label">Simulations terminées</p>
         <div class="chats-grid">
-          <% finished_chats.each_with_index do |chat, idx| %>
+          <% finished_chats.each_with_index do |chat| %>
             <div class="chat-card finished" onclick="openModal('<%= chat.feedback.id %>')">
               <div class="chat-card-top">
-                <span class="chat-card-title">Simulation #<%= idx + 1 %></span>
-                <span class="badge-feedback">✓ Feedback</span>
+                <span class="chat-card-title"><%= chat.title %></span>
+                <div>
+                  <span class="badge-feedback">✓ Feedback</span>
+                </div>
               </div>
               <p class="chat-card-meta">
                 <%= l(chat.created_at.to_date, format: :short) %> · <%= pluralize(chat.messages.count, "échange", "échanges") %>
@@ -75,10 +77,10 @@
       <div class="chats-section">
         <p class="chats-section-label">En cours</p>
         <div class="chats-grid">
-          <% ongoing_chats.each_with_index do |chat, idx| %>
+          <% ongoing_chats.each_with_index do |chat| %>
             <div class="chat-card ongoing">
               <div class="chat-card-top">
-                <span class="chat-card-title">Simulation #<%= finished_chats.count + idx + 1 %></span>
+                <span class="chat-card-title"><%= chat.title %></span>
                 <span class="badge-ongoing">⏱ En cours</span>
               </div>
               <p class="chat-card-meta">

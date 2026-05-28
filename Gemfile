@@ -48,6 +48,7 @@ gem "sassc-rails"
 gem "devise"
 gem "redcarpet"
 gem "ruby_llm", "~> 1.2.0"
+gem "cloudinary"
 
 group :development, :test do
   gem "dotenv-rails"
