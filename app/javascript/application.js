@@ -5,3 +5,15 @@ import "@popperjs/core"
 import "bootstrap"
 import "./interviews"
 import "./modal"
+
+const hideFlashAlerts = () => {
+  document.querySelectorAll(".alert").forEach((element) => {
+    setTimeout(() => {
+      const alert = window.bootstrap.Alert.getOrCreateInstance(element)
+      alert.close()
+    }, 5000)
+  })
+}
+
+document.addEventListener("turbo:load", hideFlashAlerts)
+document.addEventListener("turbo:render", hideFlashAlerts)
