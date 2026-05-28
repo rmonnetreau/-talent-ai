@@ -12,7 +12,7 @@ class ChatsController < ApplicationController
     if @chat.save
       Message.create(role: "assistant",
                      content: "Bonjour ! Pour commencer, parlez-moi de votre parcours et expliquez moi pourquoi vous avez choisi de répondre à notre annonce", chat: @chat) # rubocop:disable Layout/LineLength
-      redirect_to chat_path(@chat)
+      redirect_to chat_path(@chat, mode: params[:chat_mode])
     else
       @interview = @chat.interview
       render :new, status: :unprocessable_entity

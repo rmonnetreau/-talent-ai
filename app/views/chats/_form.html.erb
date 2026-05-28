@@ -10,6 +10,7 @@
     </div>
 
     <div>
+      <p class="form-page-subtitle">Choisis le type de recruteur face à vous *</p>
       <div class="role-picker">
         <%= f.collection_radio_buttons :chat_role_id, ChatRole.all, :id, :title do |b| %>
           <%= b.label class: "role-picker-card" do %>
@@ -22,6 +23,26 @@
         <% end %>
       </div>
       <%= f.error :chat_role_id, class: "app-form-error" %>
+    </div>
+
+    <div id="chatVersion">
+      <p class="form-page-subtitle">Quel type de chat préfères-tu ?</p>
+      <div class="version-picker">
+        <label class="version-picker-card">
+          <input type="radio" name="chat_mode" value="audio" checked>
+          <div class="version-picker-card-body">
+            <strong>🎤 Audio</strong>
+            <span>Entretien vocal</span>
+          </div>
+        </label>
+        <label class="version-picker-card">
+          <input type="radio" name="chat_mode" value="text">
+          <div class="version-picker-card-body">
+            <strong>⌨️ Texte</strong>
+            <span>Entretien écrit</span>
+          </div>
+        </label>
+      </div>
     </div>
 
     <div class="app-form-actions">
