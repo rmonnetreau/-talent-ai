@@ -1,5 +1,4 @@
-<%= simple_form_for [chat, message], html: { "data-voice-input-target": "form" } do |f| %>
-    <%= f.input :content, label: false, required: true, placeholder: "Écris ta réponse",
-                input_html: { "data-voice-input-target": "contentInput" } %>
-    <%= f.button :submit, "Submit", class: "btn btn-primary" %>
+<%= simple_form_for [chat, message] do |f| %>
+  <%= f.input :content, label: false, required: true, placeholder: "Écris ta réponse" %>
+  <%= f.button :submit, "Répondre", class: "btn btn-primary" %>
 <% end %>

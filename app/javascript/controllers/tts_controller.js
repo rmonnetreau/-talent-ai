@@ -38,7 +38,10 @@ export default class extends Controller {
     const utterance = new SpeechSynthesisUtterance(text)
     utterance.lang = "fr-FR"
     utterance.rate = 0.9
-    utterance.onstart = () => this.setPlaying(true)
+    utterance.onstart = () => {
+      this.setPlaying(true)
+      document.dispatchEvent(new CustomEvent("tts:start"))
+    }
     utterance.onend = () => {
       this.setPlaying(false)
       document.dispatchEvent(new CustomEvent("tts:ended"))
