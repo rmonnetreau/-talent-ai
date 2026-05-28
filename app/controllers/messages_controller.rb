@@ -22,7 +22,7 @@ class MessagesController < ApplicationController
       broadcast_replace(@assistant_message)
 
       respond_to do |format|
-        format.turbo_stream # renders `app/views/messages/create.turbo_stream.erb`
+        format.turbo_stream
         format.html { redirect_to chat_path(@chat) }
       end
     else
