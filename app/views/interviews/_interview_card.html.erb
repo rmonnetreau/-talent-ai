@@ -1,4 +1,12 @@
-<div class="interview-card">
+<% has_finished_chats = interview.chats.joins(:feedback).exists? %>
+<% has_ongoing_chats = interview.chats.where.missing(:feedback).exists? %>
+
+<div class="interview-card"
+     data-interviews-filter-target="card"
+     data-title="<%= interview.job_title.to_s.downcase %>"
+     data-description="<%= interview.job_description.to_s.downcase %>"
+     data-status="<%= has_ongoing_chats ? "ongoing" : has_finished_chats ? "finished" : "empty" %>"
+     data-created-at="<%= interview.created_at.to_i %>">
   <div class="interview-card-header">
     <div class="interview-card-meta">
       <h2 class="interview-card-title"><%= interview.job_title %></h2>

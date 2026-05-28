@@ -37,7 +37,7 @@ puts "✅ Utilisateur de test créé (candidat@test.com / password123)"
 # 2. Création des rôles de chat prédéfinis
 rh_role = ChatRole.create!(
   title: "RH",
-  prompt_description: "Tu es un chargé de recrutement RH bienveillant mais sélectif. Ton objectif est d'évaluer la cohérence du parcours du candidat, ses motivations profondes et son adéquation culturelle (cultural fit) avec l'entreprise. Pose des questions sur sa capacité à collaborer, sa gestion du stress, ses attentes managériales et sa projection dans le poste. Adopte un ton professionnel, accueillant et encourageant.Pose une seule question à la fois."
+  prompt_description: "Tu es un chargé de recrutement RH bienveillant mais sélectif. Ton objectif est d'évaluer la cohérence du parcours du candidat, ses motivations profondes et son adéquation culturelle (cultural fit) avec l'entreprise. Pose des questions sur sa capacité à collaborer, sa gestion du stress, ses attentes managériales et sa projection dans le poste. Adopte un ton professionnel, accueillant et encourageant. Pose une seule question à la fois."
 )
 manager_role = ChatRole.create!(
   title: "Manager",
@@ -45,7 +45,7 @@ manager_role = ChatRole.create!(
 )
 tech_role = ChatRole.create!(
   title: "Tech",
-  prompt_description: "Tu es un Lead Tech ou un Ingénieur Senior exigeant. Ton objectif est d'évaluer la profondeur des compétences techniques, la logique face à des cas complexes (troubleshooting, system design) et les bonnes pratiques de développement (Clean Code, architecture, testing). Tu analyses la façon dont le candidat structure sa pensée face à un problème. Adopte un ton factuel, technique, précis et analytique. Pose une seule question à la fois."
+  prompt_description: "Tu es un Lead Tech ou un Ingénieur Senior exigeant. Ton objectif est d'évaluer la profondeur des compétences techniques, la logique face à des cas complexes (troubleshooting, system design) et les bonnes pratiques de développement (Clean Code, architecture, testing). Tu analyses la façon dont le candidat structure sa pensée face à un problème. Adopte un ton factuel, technique, précis et analytique.Pose une seule question à la fois."
 )
 puts "✅ #{ChatRole.count} rôles de chat créés !"
 
@@ -72,7 +72,7 @@ interview_rails = Interview.create!(
   TEXT
 )
 
-interview_pm = Interview.create!(
+Interview.create!(
   user: test_user,
   job_title: "Product Manager - IA & SaaS (H/F)",
   job_description: <<~TEXT
@@ -128,6 +128,103 @@ Feedback.create!(
   worst_answer: "La réponse sur le fonctionnement interne de Turbo Drive et Stimulus, qui manquait de précision technique."
 )
 puts "✅ Rapport de feedback et coaching généré pour la simulation !"
+
+puts "\n=========================================================="
+puts "       Création d'entretiens supplémentaires              "
+puts "=========================================================="
+
+demo_jobs = [
+  ["Data Analyst - SQL & BI", "Analyse de données, dashboards, SQL, reporting business et recommandations stratégiques."],
+  ["UX Designer SaaS", "Recherche utilisateur, wireframes, prototypes Figma, design system et tests utilisateurs."],
+  ["Customer Success Manager B2B", "Onboarding client, suivi de portefeuille, réduction du churn et expansion account."],
+  ["Développeur Frontend React", "Développement d'interfaces React, intégration API, performance frontend et accessibilité."],
+  ["Sales Development Representative", "Prospection outbound, qualification de leads, prise de rendez-vous et CRM."],
+  ["Growth Marketing Manager", "Acquisition, SEO, campagnes payantes, analytics et optimisation du funnel."],
+  ["Lead Developer Backend", "Architecture backend, API, PostgreSQL, revues de code et mentoring technique."],
+  ["Product Owner Mobile", "Roadmap mobile, priorisation backlog, coordination design/tech et suivi des KPIs."],
+  ["Office Manager", "Gestion administrative, coordination fournisseurs, organisation interne et support équipe."],
+  ["Talent Acquisition Specialist", "Sourcing, entretiens candidats, coordination hiring managers et expérience candidat."]
+]
+
+25.times do |i|
+  title, description = demo_jobs.sample
+
+  created_at = rand(1..90).days.ago + rand(0..23).hours + rand(0..59).minutes
+
+  interview = Interview.create!(
+    user: test_user,
+    job_title: "#{title} ##{i + 1}",
+    job_description: <<~TEXT,
+      #{description}
+
+      Missions principales :
+      - Comprendre les besoins métier et proposer des solutions concrètes.
+      - Collaborer avec les équipes internes dans un environnement dynamique.
+      - Communiquer clairement sur l'avancement, les risques et les priorités.
+
+      Profil recherché :
+      - Expérience pertinente sur un poste similaire.
+      - Bon niveau de communication et capacité d'adaptation.
+      - Autonomie, rigueur et esprit d'équipe.
+    TEXT
+    created_at: created_at,
+    updated_at: created_at + rand(1..20).days
+  )
+
+  rand(0..4).times do |chat_index|
+    chat_created_at = interview.created_at + rand(1..15).days
+
+    chat = Chat.create!(
+      interview: interview,
+      chat_role: [rh_role, manager_role, tech_role].sample,
+      title: "Simulation #{chat_index + 1}",
+      created_at: chat_created_at,
+      updated_at: chat_created_at + rand(1..5).days
+    )
+
+    Message.create!([
+      {
+        chat: chat,
+        role: "assistant",
+        content: "Bonjour, merci d'être là. Pour commencer, pouvez-vous me présenter votre parcours ?",
+        created_at: chat.created_at
+      },
+      {
+        chat: chat,
+        role: "user",
+        content: "Bonjour, j'ai un parcours orienté produit et tech, avec plusieurs expériences en environnement SaaS.",
+        created_at: chat.created_at + 2.minutes
+      },
+      {
+        chat: chat,
+        role: "assistant",
+        content: "Très bien. Pouvez-vous me donner un exemple concret de projet dont vous êtes fier ?",
+        created_at: chat.created_at + 4.minutes
+      },
+      {
+        chat: chat,
+        role: "user",
+        content: "Oui, j'ai mené un projet transverse avec plusieurs équipes, en clarifiant les priorités et en livrant progressivement.",
+        created_at: chat.created_at + 6.minutes
+      }
+    ])
+
+    if [true, false].sample
+      Feedback.create!(
+        chat: chat,
+        global_score: rand(45..95),
+        strengths: "- Bonne clarté dans les réponses.\n- Exemples concrets et pertinents.",
+        weaknesses: "- Réponses parfois trop générales.\n- Manque de structure sur certains exemples.",
+        priority_advice: "Préparer davantage d'exemples structurés avec la méthode STAR.",
+        recommended_method: "Méthode STAR",
+        best_answer: "L'exemple de projet transverse était clair et crédible.",
+        worst_answer: "La réponse sur la motivation manquait de précision."
+      )
+    end
+  end
+end
+
+puts "✅ #{Interview.count} entretiens créés au total."
 
 puts "\n=========================================================="
 puts "           Seeding terminé avec succès !                  "

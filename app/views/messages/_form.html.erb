@@ -1,4 +1,30 @@
-<%= simple_form_for [chat, message] do |f| %>
-  <%= f.input :content, label: false, required: true, placeholder: "Écris ta réponse" %>
-  <%= f.button :submit, "Répondre", class: "btn btn-primary" %>
+<%= simple_form_for [chat, message],
+  html: {
+    class: "chat-input-form",
+    data: { controller: "speech" }
+  } do |f| %>
+  <div class="chat-composer">
+    <%= f.input :content,
+      label: false,
+      wrapper: false,
+      required: true,
+      placeholder: "Écris ta réponse...",
+      input_html: {
+        class: "chat-composer-input",
+        rows: 1,
+        data: { speech_target: "input" }
+      } %>
+    <button type="button"
+            class="chat-icon-btn"
+            data-action="click->speech#toggle"
+            data-speech-target="button"
+            title="Dicter">
+      <i class="fa-solid fa-microphone"></i>
+    </button>
+    <%= button_tag type: "submit",
+        class: "chat-send-btn",
+        title: "Envoyer" do %>
+      <i class="fa-solid fa-arrow-up"></i>
+    <% end %>
+  </div>
 <% end %>

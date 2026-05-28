@@ -1,5 +1,6 @@
 <% @interviews ||= [] %>
-<div class="interviews-index">
+
+<div class="interviews-index" data-controller="interviews-filter">
   <div class="interviews-header">
     <div>
       <h1>Mes entretiens</h1>
@@ -7,9 +8,51 @@
         <%= pluralize(@interviews.count, "poste suivi", "postes suivis") %>
       </p>
     </div>
+
     <%= link_to new_interview_path, class: "btn-primary" do %>
       <span>+</span> Nouvel entretien
     <% end %>
+  </div>
+
+  <div class="interviews-toolbar">
+    <input
+      type="text"
+      class="interviews-search-input"
+      placeholder="Rechercher un entretien..."
+      data-interviews-filter-target="search"
+      data-action="input->interviews-filter#filter">
+
+    <div class="interviews-filter-tabs">
+      <button type="button"
+              class="interviews-filter-tab active"
+              data-status="all"
+              data-action="click->interviews-filter#setStatus">
+        Tous
+      </button>
+
+      <button type="button"
+              class="interviews-filter-tab"
+              data-status="ongoing"
+              data-action="click->interviews-filter#setStatus">
+        En cours
+      </button>
+
+      <button type="button"
+              class="interviews-filter-tab"
+              data-status="finished"
+              data-action="click->interviews-filter#setStatus">
+        Terminés
+      </button>
+    </div>
+    <div class="">
+      <button
+        type="button"
+        class="interviews-sort-btn"
+        data-interviews-filter-target="sortButton"
+        data-action="click->interviews-filter#toggleSort">
+        <i class="fa-solid fa-arrow-down-short-wide"></i>
+      </button>
+    </div>
   </div>
 
   <div class="interviews-list">
