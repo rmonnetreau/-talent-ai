@@ -1,11 +1,4 @@
 class MessagesController < ApplicationController
-  # TODO: ElevenLabs TTS – à réactiver avec ELEVENLABS_API_KEY (Azure Speech en alternative gratuite)
-  # ELEVENLABS_VOICES = {
-  #   "RH"      => "EXAVITQu4vr4xnSDxMaL", # Sarah  – feminine, warm
-  #   "Manager" => "VR6AewLTigWG4xSOukaG",  # Arnold – authoritative
-  #   "Tech"    => "pNInz6obpgDQGcFmaJgB"   # Adam   – clear
-  # }.freeze
-
   def create # rubocop:disable Metrics/MethodLength
     @chat = Chat.joins(:interview).where(interviews: { user: current_user }).find(params[:chat_id])
     system_prompt = ChatRole.find(@chat.chat_role_id).prompt_description
@@ -16,10 +9,19 @@ class MessagesController < ApplicationController
     if @message.save
       @assistant_message = @chat.messages.create(role: "assistant", content: "", chat: @chat)
 
-      response = ask_llm(system_prompt)
+      ask_llm(system_prompt)
 
-      @assistant_message.update(content: response.content)
-      broadcast_replace(@assistant_message)
+      @assistant_message.update(content: @assistant_message.content)
+
+      # Pre-generate TTS before the final broadcast so audio plays instantly on autoplay.
+      begin
+        mp3 = elevenlabs_tts(strip_markdown(@assistant_message.content))
+        Rails.cache.write(tts_cache_key(@assistant_message), mp3, expires_in: 3.hours)
+      rescue StandardError => e
+        Rails.logger.warn "TTS pre-generation failed: #{e.message}"
+      end
+
+      broadcast_replace(@assistant_message, final: true)
 
       respond_to do |format|
         format.turbo_stream
@@ -39,24 +41,14 @@ class MessagesController < ApplicationController
     end
   end
 
-  # TODO: ElevenLabs TTS – à réactiver quand ELEVENLABS_API_KEY disponible
-  # def audio
-  #   chat = Chat.joins(:interview).where(interviews: { user: current_user }).find(params[:chat_id])
-  #   message = chat.messages.where(role: "assistant").find(params[:id])
-  #   voice_id = elevenlabs_voice_for(chat.chat_role.title)
-  #
-  #   conn = Faraday.new("https://api.elevenlabs.io") { |f| f.response :raise_error }
-  #
-  #   tts_response = conn.post("/v1/text-to-speech/#{voice_id}") do |req|
-  #     req.headers["xi-api-key"]   = ENV.fetch("ELEVENLABS_API_KEY")
-  #     req.headers["Content-Type"] = "application/json"
-  #     req.headers["Accept"]       = "audio/mpeg"
-  #     req.body = { text: strip_markdown(message.content), model_id: "eleven_multilingual_v2",
-  #                  voice_settings: { stability: 0.5, similarity_boost: 0.75 } }.to_json
-  #   end
-  #
-  #   send_data tts_response.body, type: "audio/mpeg", disposition: "inline"
-  # end
+  def audio
+    chat = Chat.joins(:interview).where(interviews: { user: current_user }).find(params[:chat_id])
+    message = chat.messages.where(role: "assistant").find(params[:id])
+
+    mp3 = Rails.cache.read(tts_cache_key(message)) ||
+          elevenlabs_tts(strip_markdown(message.content))
+    send_data mp3, type: "audio/mpeg", disposition: "inline"
+  end
 
   private
 
@@ -70,16 +62,16 @@ class MessagesController < ApplicationController
       next if chunk.content.blank? # skip empty chunks
 
       @assistant_message.content += chunk.content
-      broadcast_replace(@assistant_message)
+      broadcast_replace(@assistant_message, final: false)
     end
   end
 
-  def broadcast_replace(message)
+  def broadcast_replace(message, final: true)
     Turbo::StreamsChannel.broadcast_replace_to(
       @chat,
       target: helpers.dom_id(message),
       partial: "messages/message",
-      locals: { message: message, last_assistant: last_assistant }
+      locals: { message: message, last_assistant: final ? last_assistant : nil }
     )
   end
 
@@ -102,21 +94,38 @@ class MessagesController < ApplicationController
     end
   end
 
-  # TODO: ElevenLabs – à réactiver avec l'action audio
-  # def elevenlabs_voice_for(role_title)
-  #   ELEVENLABS_VOICES.fetch(role_title, ELEVENLABS_VOICES["RH"])
-  # end
-  #
-  # def strip_markdown(text)
-  #   text
-  #     .gsub(/^\#+ /, "")
-  #     .gsub(/\*\*(.+?)\*\*/m, '\1')
-  #     .gsub(/\*(.+?)\*/m, '\1')
-  #     .gsub(/`(.+?)`/m, '\1')
-  #     .gsub(/```.*?```/m, "")
-  #     .gsub(/\[(.+?)\]\(.+?\)/, '\1')
-  #     .gsub(/^\s*[-*+]\s/, "")
-  #     .gsub(/^\s*\d+\.\s/, "")
-  #     .strip
-  # end
+  def elevenlabs_tts(text, voice_id: "kENkNtk0xyzG09WW40xE")
+    conn = Faraday.new("https://api.elevenlabs.io")
+    response = conn.post("/v1/text-to-speech/#{voice_id}") do |req|
+      req.headers["xi-api-key"]   = ENV.fetch("ELEVENLABS_API_KEY")
+      req.headers["Content-Type"] = "application/json"
+      req.headers["Accept"]       = "audio/mpeg"
+      req.body = {
+        text: text,
+        model_id: "eleven_turbo_v2_5",
+        language_code: "fr",
+        voice_settings: { stability: 0.5, similarity_boost: 0.75 }
+      }.to_json
+    end
+    raise "ElevenLabs TTS error: #{response.status}" unless response.success?
+
+    response.body
+  end
+
+  def tts_cache_key(message)
+    "tts_message_#{message.id}"
+  end
+
+  def strip_markdown(text)
+    text
+      .gsub(/```.*?```/m, "")
+      .gsub(/^\#{1,6} /, "")
+      .gsub(/\*\*(.+?)\*\*/m, '\1')
+      .gsub(/\*(.+?)\*/m, '\1')
+      .gsub(/`(.+?)`/, '\1')
+      .gsub(/\[(.+?)\]\(.+?\)/, '\1')
+      .gsub(/^\s*[-*+]\s/, "")
+      .gsub(/^\s*\d+\.\s/, "")
+      .strip
+  end
 end
