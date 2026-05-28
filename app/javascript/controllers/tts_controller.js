@@ -62,7 +62,7 @@ export default class extends Controller {
     const btn = document.createElement("button")
     btn.type = "button"
     btn.className = "tts-btn"
-    btn.innerHTML = "🔊"
+    btn.innerHTML = "<i class=\"fa-solid fa-volume-high\"></i>"
     btn.title = "Écouter"
     btn.setAttribute("data-action", "click->tts#toggleSpeech")
     this.speakerBtn = btn
@@ -71,7 +71,7 @@ export default class extends Controller {
 
   setPlaying(playing) {
     if (!this.speakerBtn) return
-    this.speakerBtn.innerHTML = playing ? "⏹️" : "🔊"
+    this.speakerBtn.innerHTML = playing ? "<i class=\"fa-solid fa-volume-xmark\"></i>" : "<i class=\"fa-solid fa-volume-high\"></i>"
     this.speakerBtn.title = playing ? "Arrêter" : "Écouter"
     this.speakerBtn.classList.toggle("tts-btn--playing", playing)
   }
