@@ -26,6 +26,9 @@ class MessagesController < ApplicationController
     if @message.save
       @assistant_message = @chat.messages.create(role: "assistant", content: "", chat: @chat)
 
+      broadcast_append(@message)
+      broadcast_append(@assistant_message)
+
       response = ask_llm(system_prompt)
 
       @assistant_message.update(content: response.content)
@@ -80,8 +83,17 @@ class MessagesController < ApplicationController
       next if chunk.content.blank? # skip empty chunks
 
       @assistant_message.content += chunk.content
-      broadcast_replace(@assistant_message)
+      broadcast_content(@assistant_message)
     end
+  end
+
+  def broadcast_append(message)
+    Turbo::StreamsChannel.broadcast_append_to(
+      @chat,
+      target: "messages",
+      partial: "messages/message",
+      locals: { message: message, last_assistant: nil }
+    )
   end
 
   def broadcast_replace(message)
@@ -90,6 +102,15 @@ class MessagesController < ApplicationController
       target: helpers.dom_id(message),
       partial: "messages/message",
       locals: { message: message, last_assistant: last_assistant }
+    )
+  end
+
+  def broadcast_content(message)
+    Turbo::StreamsChannel.broadcast_update_to(
+      @chat,
+      target: "message_body_#{message.id}",
+      partial: "messages/message_body",
+      locals: { message: message }
     )
   end
 
