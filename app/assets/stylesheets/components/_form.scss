@@ -25,9 +25,9 @@
   }
 
   &-subtitle {
-    font-size: 15px;
+    font-size: 14px;
     color: $text-mid;
-    margin: 0 0 28px;
+    margin: 0 0 12px;
   }
 }
 
@@ -118,6 +118,40 @@
 
       strong { font-size: 14px; color: $text-dark; }
       span   { font-size: 13px; color: $text-mid; line-height: 1.4; }
+    }
+
+    &:has(input:checked) {
+      border-color: $primary;
+      box-shadow: 0 0 0 3px rgba($primary, 0.1);
+    }
+  }
+}
+
+// ── Version picker (audio / text) ──────────────────────────────
+.version-picker {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+
+  &-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    border: 1px solid $border;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+
+    input[type="radio"] { flex-shrink: 0; }
+
+    &-body {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+
+      strong { font-size: 14px; color: $text-dark; }
+      span   { font-size: 12px; color: $text-mid; }
     }
 
     &:has(input:checked) {

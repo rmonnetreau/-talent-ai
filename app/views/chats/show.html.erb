@@ -1,19 +1,55 @@
 <%= turbo_stream_from @chat %>
-<div class="chat-show">
+<div class="chat-show"
+     data-controller="voice-input chat-version"
+     data-chat-version-chat-id-value="<%= @chat.id %>">
+
   <div class="chat-header">
     <div class="chat-header-title">
       <h1><%= @chat.title %>, pour <%= @interview.job_title %></h1>
       <p class="chat-subtitle">Recruteur <%= @chat_role.title %></p>
     </div>
-    <%= button_to "Générer mes feedbacks", chat_feedbacks_path(@chat), class: "btn btn-success" %>
+    <button type="button"
+            class="chat-mode-switch"
+            data-chat-version-target="switchBtn"
+            data-action="click->chat-version#toggle">
+      <span data-label></span>
+      <span class="chat-mode-switch-icon"></span>
+    </button>
   </div>
 
-  <div class="chat-module-card">
+  <div class="chat-module-card" data-chat-version-target="text">
     <div id="messages">
       <%= render "messages/messages", messages: @chat.messages %>
     </div>
-    <div id="new_message_container">
+    <div id="new_message_container" data-chat-version-target="text">
       <%= render "messages/form", chat: @chat, message: @message %>
     </div>
   </div>
+
+  <div class="voice-input-panel" data-chat-version-target="audio">
+    <div class="d-flex align-items-center gap-5 p-4 bg-white border rounded-4 w-100">
+      <img src="https://i1.sndcdn.com/artworks-000000737630-in8gri-t500x500.jpg" width="100" class="rounded" />
+      <div data-controller="waveform" class="waveform-container d-none"></div>
+    </div>
+
+    <div class="voice-action d-flex flex-column align-items-center gap-2 p-4 mt-3">
+      <p class="voice-status" data-voice-input-target="status">Vous : Maintenez pour parler</p>
+      <button type="button"
+              class="voice-mic-btn"
+              data-voice-input-target="button"
+              data-action="mousedown->voice-input#startListening mouseup->voice-input#stopListening touchstart->voice-input#startListening touchend->voice-input#stopListening">
+        <i class="fa-solid fa-microphone"></i>
+      </button>
+    </div>
+
+    <p class="voice-counter">
+      <%= @chat.messages.where(role: "user").count %> / <%= Message::MAX_USER_MESSAGES %> messages
+    </p>
+  </div>
+
+  <div class="border-top mt-5 pt-4">
+    <p>Vous avez terminé cette simulation ? Générer un feedback pour obtenir vos points forts, vos points faibles et nos conseils pour améliorer votre discours.</p>
+    <%= button_to "Générer mes feedbacks", chat_feedbacks_path(@chat), class: "btn btn-success" %>
+  </div>
+
 </div>

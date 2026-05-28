@@ -1,6 +1,13 @@
 <% is_assistant = message.role == "assistant" %>
 <% last_assistant ||= nil %>
-<div class="chat-module-messages d-flex flex-column mb-4 <%= is_assistant ? 'align-items-start' : 'align-items-end' %>" id="<%= dom_id(message) %>" <%= is_assistant ? "data-controller=\"tts\" data-tts-autoplay-value=\"#{message == last_assistant}\"" : "" %>>
+<div class="chat-module-messages d-flex flex-column mb-4 <%= is_assistant ? "align-items-start" : "align-items-end" %>"
+     <% if is_assistant %>
+       data-controller="tts"
+       data-tts-autoplay-value="<%= message == last_assistant %>"
+       data-tts-chat-id-value="<%= message.chat_id %>"
+       data-tts-message-id-value="<%= message.id %>"
+     <% end %>>
+
   <span><%= is_assistant ? message.role : "Vous" %></span>
   <div class="message-body <%= is_assistant ? "" : "light" %>">
     <%= raw(markdown(message.content)) %>

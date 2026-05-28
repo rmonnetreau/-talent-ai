@@ -1,5 +1,10 @@
 class MessagesController < ApplicationController
-  # Rails.root.join("app/assets/prompt_recruteur.md").read
+  # TODO: ElevenLabs TTS – à réactiver avec ELEVENLABS_API_KEY (Azure Speech en alternative gratuite)
+  # ELEVENLABS_VOICES = {
+  #   "RH"      => "EXAVITQu4vr4xnSDxMaL", # Sarah  – feminine, warm
+  #   "Manager" => "VR6AewLTigWG4xSOukaG",  # Arnold – authoritative
+  #   "Tech"    => "pNInz6obpgDQGcFmaJgB"   # Adam   – clear
+  # }.freeze
 
   def create # rubocop:disable Metrics/MethodLength
     @chat = Chat.joins(:interview).where(interviews: { user: current_user }).find(params[:chat_id])
@@ -33,6 +38,25 @@ class MessagesController < ApplicationController
       end
     end
   end
+
+  # TODO: ElevenLabs TTS – à réactiver quand ELEVENLABS_API_KEY disponible
+  # def audio
+  #   chat = Chat.joins(:interview).where(interviews: { user: current_user }).find(params[:chat_id])
+  #   message = chat.messages.where(role: "assistant").find(params[:id])
+  #   voice_id = elevenlabs_voice_for(chat.chat_role.title)
+  #
+  #   conn = Faraday.new("https://api.elevenlabs.io") { |f| f.response :raise_error }
+  #
+  #   tts_response = conn.post("/v1/text-to-speech/#{voice_id}") do |req|
+  #     req.headers["xi-api-key"]   = ENV.fetch("ELEVENLABS_API_KEY")
+  #     req.headers["Content-Type"] = "application/json"
+  #     req.headers["Accept"]       = "audio/mpeg"
+  #     req.body = { text: strip_markdown(message.content), model_id: "eleven_multilingual_v2",
+  #                  voice_settings: { stability: 0.5, similarity_boost: 0.75 } }.to_json
+  #   end
+  #
+  #   send_data tts_response.body, type: "audio/mpeg", disposition: "inline"
+  # end
 
   private
 
@@ -77,4 +101,22 @@ class MessagesController < ApplicationController
       @ruby_llm_chat.add_message(message)
     end
   end
+
+  # TODO: ElevenLabs – à réactiver avec l'action audio
+  # def elevenlabs_voice_for(role_title)
+  #   ELEVENLABS_VOICES.fetch(role_title, ELEVENLABS_VOICES["RH"])
+  # end
+  #
+  # def strip_markdown(text)
+  #   text
+  #     .gsub(/^\#+ /, "")
+  #     .gsub(/\*\*(.+?)\*\*/m, '\1')
+  #     .gsub(/\*(.+?)\*/m, '\1')
+  #     .gsub(/`(.+?)`/m, '\1')
+  #     .gsub(/```.*?```/m, "")
+  #     .gsub(/\[(.+?)\]\(.+?\)/, '\1')
+  #     .gsub(/^\s*[-*+]\s/, "")
+  #     .gsub(/^\s*\d+\.\s/, "")
+  #     .strip
+  # end
 end
