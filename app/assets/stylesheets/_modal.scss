@@ -127,6 +127,17 @@
   gap: 10px;
 }
 
+.modal-section-title {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: $text-dark;
+  margin: 0 0 4px;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 8px;
+}
+
 .modal-section-label {
   font-size: 11px;
   font-weight: 600;
@@ -218,8 +229,78 @@
 .modal-footer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 10px;
   padding-top: 4px;
   border-top: 1px solid $border;
+  flex-shrink: 0;
+}
+
+// ── Wide variant (feedback modal 3 columns) ────────────────────
+.modal-box--wide {
+  max-width: 1100px;
+}
+
+// ── 3-column grid ─────────────────────────────────────────────
+.modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 32px;
+  flex: 1;
+  overflow-y: auto;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ── Dashboard column spacing ───────────────────────────────────
+.modal-grid > .modal-section:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+// ── Debrief sub-labels (Points Forts / Axes d'Amélioration) ───
+.modal-debrief-label {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  color: $text-dark;
+  margin: 0 0 6px;
+}
+
+// ── Feedback list colors & size ────────────────────────────────
+.feedback-content--green {
+  font-size: 13px;
+  ul li::marker { color: #16a34a; }
+  p, li { color: $text-dark; font-size: 13px; }
+}
+
+.feedback-content--orange {
+  font-size: 13px;
+  ul li::marker { color: #ea580c; }
+  p, li { color: $text-dark; font-size: 13px; }
+}
+
+.feedback-content--amber {
+  font-size: 13px;
+  ul li::marker { color: #d97706; }
+  p, li { color: $text-dark; font-size: 13px; }
+}
+
+.feedback-content--blue {
+  font-size: 13px;
+  ul li::marker { color: #2563eb; }
+  p, li { color: $text-dark; font-size: 13px; }
+}
+
+// ── Score circle centering ─────────────────────────────────────
+.modal-score-circle {
+  &::after {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 }
