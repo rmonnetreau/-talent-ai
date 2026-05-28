@@ -2,7 +2,7 @@ class Message < ApplicationRecord
   MAX_USER_MESSAGES = 10
 
   belongs_to :chat
-  validates :content, presence: true
+  validates :content, presence: true, unless: -> { role == "assistant" }
   validate :user_message_limit, if: -> { role == "user" }
 
   after_create_commit :broadcast_append_to_chat

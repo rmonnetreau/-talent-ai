@@ -8,7 +8,17 @@ class MessagesController < ApplicationController
 
   def create # rubocop:disable Metrics/MethodLength
     @chat = Chat.joins(:interview).where(interviews: { user: current_user }).find(params[:chat_id])
+    profile = current_user.profile
     system_prompt = ChatRole.find(@chat.chat_role_id).prompt_description
+
+    if profile&.cv&.attached?
+      system_prompt += <<~PROMPT
+
+        Le candidat a fourni son CV.
+        Utilise-le comme contexte pendant tout l'entretien.
+      PROMPT
+    end
+
     @message = Message.new(message_params)
     @message.chat = @chat
     @message.role = "user"
