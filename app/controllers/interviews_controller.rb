@@ -38,7 +38,7 @@ class InterviewsController < ApplicationController
   private
 
   def set_interview
-    @interview = Interview.find(params[:id])
+    @interview = current_user.interviews.find(params[:id])
   end
 
   def interview_params

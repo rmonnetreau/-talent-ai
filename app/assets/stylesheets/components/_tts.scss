@@ -71,7 +71,10 @@
   background: white;
 }
 
-.chat-composer-input {
+.chat-composer-input.form-control,
+.chat-composer-input.form-control:hover,
+.chat-composer-input.form-control:focus,
+.chat-composer-input.form-control:active {
   flex: 1;
   border: none !important;
   box-shadow: none !important;

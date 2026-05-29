@@ -74,7 +74,7 @@ class MessagesController < ApplicationController
   private
 
   def ask_llm(system_prompt = nil)
-    @ruby_llm_chat = RubyLLM.chat(model: "gpt-4o")
+    @ruby_llm_chat = RubyLLM.chat
     @ruby_llm_chat = @ruby_llm_chat.with_instructions(system_prompt) if system_prompt.present?
 
     build_conversation_history

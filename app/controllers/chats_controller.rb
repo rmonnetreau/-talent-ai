@@ -80,7 +80,7 @@ class ChatsController < ApplicationController
         Utilise-le pour personnaliser légèrement l'accueil, sans faire un résumé complet.
       PROMPT
     end
-    ruby_llm_chat = RubyLLM.chat(model: "gpt-4o")
+    ruby_llm_chat = RubyLLM.chat
     ruby_llm_chat = ruby_llm_chat.with_instructions(system_prompt)
     if profile&.cv&.attached?
       ruby_llm_chat.ask("Génère le premier message d'accueil de l'entretien.", with: profile.cv).content

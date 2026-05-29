@@ -15,7 +15,7 @@ class FeedbacksController < ApplicationController
       messages:
       #{messages_history}
     PROMPT
-    ruby_llm_feedback = RubyLLM.chat(model: "gpt-4o")
+    ruby_llm_feedback = RubyLLM.chat
     response = ruby_llm_feedback
                .with_instructions(SYSTEM_PROMPT)
                .ask(prompt)

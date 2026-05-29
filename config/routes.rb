@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  get "stimulus/ChatTheme"
+  # get "stimulus/ChatTheme"
   devise_for :users
 
   get "up" => "rails/health#show", as: :rails_health_check
