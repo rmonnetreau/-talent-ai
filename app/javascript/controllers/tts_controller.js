@@ -1,61 +1,68 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static values = { autoplay: Boolean }
+  static values = { autoplay: Boolean, chatId: String }
 
   connect() {
-    if (!window.speechSynthesis) return
     this.addSpeakerButton()
-    if (this.autoplayValue) this.speakWhenReady()
+    if (this.autoplayValue && this.isAudioMode()) this.speak()
   }
 
-  speakWhenReady() {
-    // speechSynthesis.speak() is blocked after async network requests in Chrome/Safari.
-    // A silent utterance re-establishes the user gesture context.
-    const unlock = new SpeechSynthesisUtterance("")
-    unlock.volume = 0
-    unlock.onend = () => this.speak()
-    speechSynthesis.speak(unlock)
+  isAudioMode() {
+    return (localStorage.getItem(`chat_mode_${this.chatIdValue}`) || "audio") === "audio"
   }
 
   disconnect() {
-    speechSynthesis.cancel()
+    if (this.audio) {
+      this.audio.pause()
+      this.audio.currentTime = 0
+    }
   }
 
   toggleSpeech() {
-    if (speechSynthesis.speaking) {
+    if (this.audio && !this.audio.paused) {
       this.stop()
     } else {
       this.speak()
     }
   }
 
-  speak() {
-    speechSynthesis.cancel()
+  async speak() {
     const text = this.element.querySelector(".message-body")?.textContent?.trim()
     if (!text) return
 
-    const utterance = new SpeechSynthesisUtterance(text)
-    utterance.lang = "fr-FR"
-    utterance.rate = 0.9
-    utterance.onstart = () => {
-      this.setPlaying(true)
-      document.dispatchEvent(new CustomEvent("tts:start"))
+    setTimeout(() => document.dispatchEvent(new CustomEvent("tts:loading")), 0)
+
+    let audio
+    try {
+      audio = await puter.ai.txt2speech(text, {
+        provider: "openai",
+        model: "tts-1",
+        voice: "echo"
+      })
+    } catch {
+      document.dispatchEvent(new CustomEvent("tts:ended"))
+      return
     }
-    utterance.onend = () => {
+
+    this.audio = audio
+    this.audio.onended = () => {
       this.setPlaying(false)
       document.dispatchEvent(new CustomEvent("tts:ended"))
     }
-    utterance.onerror = () => {
-      this.setPlaying(false)
-      document.dispatchEvent(new CustomEvent("tts:ended"))
-    }
-    speechSynthesis.speak(utterance)
+
+    this.setPlaying(true)
+    document.dispatchEvent(new CustomEvent("tts:start"))
+    this.audio.play().catch(() => {})
   }
 
   stop() {
-    speechSynthesis.cancel()
+    if (this.audio) {
+      this.audio.pause()
+      this.audio.currentTime = 0
+    }
     this.setPlaying(false)
+    document.dispatchEvent(new CustomEvent("tts:ended"))
   }
 
   addSpeakerButton() {
@@ -71,7 +78,9 @@ export default class extends Controller {
 
   setPlaying(playing) {
     if (!this.speakerBtn) return
-    this.speakerBtn.innerHTML = playing ? "<i class=\"fa-solid fa-volume-xmark\"></i>" : "<i class=\"fa-solid fa-volume-high\"></i>"
+    this.speakerBtn.innerHTML = playing
+      ? "<i class=\"fa-solid fa-volume-xmark\"></i>"
+      : "<i class=\"fa-solid fa-volume-high\"></i>"
     this.speakerBtn.title = playing ? "Arrêter" : "Écouter"
     this.speakerBtn.classList.toggle("tts-btn--playing", playing)
   }

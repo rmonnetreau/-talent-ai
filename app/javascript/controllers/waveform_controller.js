@@ -110,21 +110,38 @@ export default class extends Controller {
   connect() {
     this.waves = new VoiceWaves({ width: 600, height: 60, container: this.element })
 
+    this.loadingEl = document.createElement("div")
+    this.loadingEl.className = "waveform-loading d-none"
+    this.loadingEl.innerHTML = "<span></span><span></span><span></span>"
+    this.element.appendChild(this.loadingEl)
+
+    this.onLoading = () => {
+      this.element.classList.remove("d-none")
+      this.waves.canvas.classList.add("d-none")
+      this.loadingEl.classList.remove("d-none")
+    }
     this.onStart = () => {
+      this.loadingEl.classList.add("d-none")
+      this.waves.canvas.classList.remove("d-none")
       this.element.classList.remove("d-none")
       this.waves.start()
     }
     this.onEnd = () => {
       this.waves.stop()
+      this.loadingEl.classList.add("d-none")
+      this.waves.canvas.classList.add("d-none")
       this.element.classList.add("d-none")
     }
 
+
+    document.addEventListener("tts:loading", this.onLoading)
     document.addEventListener("tts:start", this.onStart)
     document.addEventListener("tts:ended", this.onEnd)
   }
 
   disconnect() {
     this.waves?.stop()
+    document.removeEventListener("tts:loading", this.onLoading)
     document.removeEventListener("tts:start", this.onStart)
     document.removeEventListener("tts:ended", this.onEnd)
   }
